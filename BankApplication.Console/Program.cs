@@ -158,7 +158,7 @@ namespace BankApplication
                 }
                 else
                 {
-                    Console.WriteLine("Geçersiz miktar.");
+                    Console.WriteLine("Gönderilen miktar 0'dan büyük olmalıdır.");
                 }
             }
             else
@@ -166,7 +166,7 @@ namespace BankApplication
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
-//istenilen kullanıcya para gönderme
+        //istenilen kullanıcya para gönderme
         static void TransferMoney()
         {
             Console.Write("Gönderen hesap numarasını girin: ");
