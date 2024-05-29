@@ -6,9 +6,10 @@ namespace BankApplication
 {
     class Program
     {
+        static List<Account> accounts = new List<Account>();
+
         static void Main(string[] args)
         {
-            Dictionary<string, Account> accounts = new Dictionary<string, Account>();
             bool running = true;
 
             while (running)
@@ -24,22 +25,21 @@ namespace BankApplication
                 Console.Write("Lütfen bir seçenek girin: ");
                 string choice = Console.ReadLine();
 
-                //Switch-Case yerine If-Else Kullanıldı ve güncellendi
                 if (choice == "1")
                 {
-                    CreateAccount(accounts);
+                    CreateAccount();
                 }
                 else if (choice == "2")
                 {
-                    CheckBalance(accounts);
+                    CheckBalance();
                 }
                 else if (choice == "3")
                 {
-                    DepositMoney(accounts);
+                    DepositMoney();
                 }
                 else if (choice == "4")
                 {
-                    WithdrawMoney(accounts);
+                    WithdrawMoney();
                 }
                 else if (choice == "5")
                 {
@@ -55,17 +55,15 @@ namespace BankApplication
             }
         }
 
-        static void CreateAccount(Dictionary<string, Account> accounts)
+        static void CreateAccount()
         {
-            //Yeni kullanıcı oluşturma ve güncelleme
             Account newAccount = new Account
             {
                 Id = Guid.NewGuid(),
                 Created = DateTime.Now,
                 Updated = DateTime.Now
             };
-            
-            //Yeni kullanıcı için Hesap oluşturma adımları
+
             Console.Write("Adınızı girin: ");
             newAccount.Name = Console.ReadLine();
 
@@ -75,9 +73,8 @@ namespace BankApplication
             Console.Write("E-posta adresinizi girin: ");
             newAccount.Email = Console.ReadLine();
 
-            Console.Write("Şifrenizi oluşturun: ");
+            Console.Write("Şifrenizi girin: ");
             newAccount.Password = Console.ReadLine();
-            Console.WriteLine("Şifreniz başarıyla oluşturuldu! ");
 
             Console.Write("Telefon numaranızı girin: ");
             newAccount.PhoneNumber = Console.ReadLine();
@@ -88,36 +85,37 @@ namespace BankApplication
             newAccount.Balance = "0";
             newAccount.AccountNumber = GenerateAccountNumber();
 
-            accounts.Add(newAccount.AccountNumber, newAccount);
+            accounts.Add(newAccount);
             Console.WriteLine($"Hesap başarıyla oluşturuldu! Hesap Numarası: {newAccount.AccountNumber}");
         }
 
-        //Yeni oluşturulan kullanıcıya atanan hesap numarası ve bakiyenin Consolda görüntülenmesi
-        static void CheckBalance(Dictionary<string, Account> accounts)
+        static void CheckBalance()
         {
             string accountNumber = GetAccountNumber();
-            if (accounts.ContainsKey(accountNumber))
+            Account account = accounts.Find(a => a.AccountNumber == accountNumber);
+            if (account != null)
             {
-                Console.WriteLine($"Hesap Numarası: {accountNumber}, Bakiye: {accounts[accountNumber].Balance} TL");
+                Console.WriteLine($"Hesap Numarası: {accountNumber}, Bakiye: {account.Balance} TL");
             }
             else
             {
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
-        //Kullanıcının hesabına bakiye eklemesi
-        static void DepositMoney(Dictionary<string, Account> accounts)
+
+        static void DepositMoney()
         {
             string accountNumber = GetAccountNumber();
-            if (accounts.ContainsKey(accountNumber))
+            Account account = accounts.Find(a => a.AccountNumber == accountNumber);
+            if (account != null)
             {
                 Console.Write("Yatırmak istediğiniz miktarı girin: ");
                 if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                 {
-                    decimal currentBalance = decimal.Parse(accounts[accountNumber].Balance);
-                    accounts[accountNumber].Balance = (currentBalance + amount).ToString();
-                    accounts[accountNumber].Updated = DateTime.Now;
-                    Console.WriteLine($"Yeni bakiye: {accounts[accountNumber].Balance} TL");
+                    decimal currentBalance = decimal.Parse(account.Balance);
+                    account.Balance = (currentBalance + amount).ToString();
+                    account.Updated = DateTime.Now;
+                    Console.WriteLine($"Yeni bakiye: {account.Balance} TL");
                 }
                 else
                 {
@@ -129,21 +127,22 @@ namespace BankApplication
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
-        //Para çekme ve kalan bakiyenin görüntülenmmesi
-        static void WithdrawMoney(Dictionary<string, Account> accounts)
+
+        static void WithdrawMoney()
         {
             string accountNumber = GetAccountNumber();
-            if (accounts.ContainsKey(accountNumber))
+            Account account = accounts.Find(a => a.AccountNumber == accountNumber);
+            if (account != null)
             {
                 Console.Write("Çekmek istediğiniz miktarı girin: ");
                 if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                 {
-                    decimal currentBalance = decimal.Parse(accounts[accountNumber].Balance);
+                    decimal currentBalance = decimal.Parse(account.Balance);
                     if (currentBalance >= amount)
                     {
-                        accounts[accountNumber].Balance = (currentBalance - amount).ToString();
-                        accounts[accountNumber].Updated = DateTime.Now;
-                        Console.WriteLine($"Yeni bakiye: {accounts[accountNumber].Balance} TL");
+                        account.Balance = (currentBalance - amount).ToString();
+                        account.Updated = DateTime.Now;
+                        Console.WriteLine($"Yeni bakiye: {account.Balance} TL");
                     }
                     else
                     {
@@ -160,13 +159,13 @@ namespace BankApplication
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
-        //Hesap numarasının girilmesi
+
         static string GetAccountNumber()
         {
             Console.Write("Hesap numarasını girin: ");
             return Console.ReadLine();
         }
-        //Yeni kullanıcıya random hesap numarası atama
+
         static string GenerateAccountNumber()
         {
             Random random = new Random();
