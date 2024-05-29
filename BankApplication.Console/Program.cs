@@ -15,12 +15,14 @@ namespace BankApplication
             while (running)
             {
                 Console.WriteLine("Bankacılık Uygulamasına Hoş Geldiniz!");
+                Console.WriteLine(" ");
+                Console.WriteLine("Lütfen Yapmak İstediğiniz İşlemi Giriniz: ");
                 Console.WriteLine("1. Hesap Oluştur");
                 Console.WriteLine("2. Bakiye Sorgulama");
                 Console.WriteLine("3. Para Yatırma");
                 Console.WriteLine("4. Para Çekme");
                 Console.WriteLine("5. Çıkış");
-                Console.Write("Lütfen bir seçenek girin: ");
+                
                 string choice = Console.ReadLine();
 
                 switch (choice)
@@ -42,7 +44,7 @@ namespace BankApplication
                         Console.WriteLine("Çıkış yapılıyor...");
                         break;
                     default:
-                        Console.WriteLine("Geçersiz seçenek, lütfen tekrar deneyin.");
+                        Console.WriteLine("Geçersiz seçenek, lütfen tekrar deneyiniz.");
                         break;
                 }
 
