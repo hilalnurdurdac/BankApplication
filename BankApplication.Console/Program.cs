@@ -21,7 +21,8 @@ namespace BankApplication
                 Console.WriteLine("2. Bakiye Sorgulama");
                 Console.WriteLine("3. Para Yatırma");
                 Console.WriteLine("4. Para Çekme");
-                Console.WriteLine("5. Çıkış");
+                Console.WriteLine("5. Para Gönderme");
+                Console.WriteLine("6. Çıkış");
                 Console.Write("Lütfen bir seçenek girin: ");
                 string choice = Console.ReadLine();
 
@@ -42,6 +43,10 @@ namespace BankApplication
                     WithdrawMoney();
                 }
                 else if (choice == "5")
+                {
+                    TransferMoney();
+                }
+                else if (choice == "6")
                 {
                     running = false;
                     Console.WriteLine("Çıkış yapılıyor...");
@@ -161,7 +166,7 @@ namespace BankApplication
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
-
+//istenilen kullanıcya para gönderme
         static void TransferMoney()
         {
             Console.Write("Gönderen hesap numarasını girin: ");
@@ -212,7 +217,7 @@ namespace BankApplication
             }
         }
 
-        //Hesap numarasının girilmesi
+        //Hesap numarasının girilmesi 827489
         static string GetAccountNumber()
         {
             Console.Write("Hesap numarasını girin: ");
