@@ -23,27 +23,32 @@ namespace BankApplication
                 Console.WriteLine("5. Çıkış");
                 Console.Write("Lütfen bir seçenek girin: ");
                 string choice = Console.ReadLine();
-                switch (choice)
+
+                //Switch-Case yerine If-Else Kullanıldı ve güncellendi
+                if (choice == "1")
                 {
-                    case "1":
-                        CreateAccount(accounts);
-                        break;
-                    case "2":
-                        CheckBalance(accounts);
-                        break;
-                    case "3":
-                        DepositMoney(accounts);
-                        break;
-                    case "4":
-                        WithdrawMoney(accounts);
-                        break;
-                    case "5":
-                        running = false;
-                        Console.WriteLine("Çıkış yapılıyor...");
-                        break;
-                    default:
-                        Console.WriteLine("Geçersiz seçenek, lütfen tekrar deneyin.");
-                        break;
+                    CreateAccount(accounts);
+                }
+                else if (choice == "2")
+                {
+                    CheckBalance(accounts);
+                }
+                else if (choice == "3")
+                {
+                    DepositMoney(accounts);
+                }
+                else if (choice == "4")
+                {
+                    WithdrawMoney(accounts);
+                }
+                else if (choice == "5")
+                {
+                    running = false;
+                    Console.WriteLine("Çıkış yapılıyor...");
+                }
+                else
+                {
+                    Console.WriteLine("Geçersiz seçenek, lütfen tekrar deneyin.");
                 }
 
                 Console.WriteLine();
