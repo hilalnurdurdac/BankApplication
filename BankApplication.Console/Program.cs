@@ -161,6 +161,57 @@ namespace BankApplication
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
+
+        static void TransferMoney()
+        {
+            Console.Write("Gönderen hesap numarasını girin: ");
+            string senderAccountNumber = Console.ReadLine();
+            Account senderAccount = accounts.Find(a => a.AccountNumber == senderAccountNumber);
+
+            if (senderAccount != null)
+            {
+                Console.Write("Alıcı hesap numarasını girin: ");
+                string receiverAccountNumber = Console.ReadLine();
+                Account receiverAccount = accounts.Find(a => a.AccountNumber == receiverAccountNumber);
+
+                if (receiverAccount != null)
+                {
+                    Console.Write("Transfer etmek istediğiniz miktarı girin: ");
+                    if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
+                    {
+                        decimal senderBalance = decimal.Parse(senderAccount.Balance);
+                        if (senderBalance >= amount)
+                        {
+                            senderAccount.Balance = (senderBalance - amount).ToString();
+                            decimal receiverBalance = decimal.Parse(receiverAccount.Balance);
+                            receiverAccount.Balance = (receiverBalance + amount).ToString();
+
+                            senderAccount.Updated = DateTime.Now;
+                            receiverAccount.Updated = DateTime.Now;
+
+                            Console.WriteLine($"Transfer başarılı! Gönderen yeni bakiye: {senderAccount.Balance} TL, Alıcı yeni bakiye: {receiverAccount.Balance} TL");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Gönderen hesapta yetersiz bakiye.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Geçersiz miktar.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Geçersiz alıcı hesap numarası.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Geçersiz gönderen hesap numarası.");
+            }
+        }
+
         //Hesap numarasının girilmesi
         static string GetAccountNumber()
         {
