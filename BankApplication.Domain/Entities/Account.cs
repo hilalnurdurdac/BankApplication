@@ -17,7 +17,7 @@ namespace BankApplication.Domain.Entities
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
         public string Balance { get; set; }
-        public string PhoneNumber {  get; set; }
+        public string PhoneNumber { get; set; }
         public string IdentityNumber { get; set; }
         public string AccountNumber { get; set; }
     }

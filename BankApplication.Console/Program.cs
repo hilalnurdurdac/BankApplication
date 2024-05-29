@@ -54,7 +54,7 @@ namespace BankApplication
                 Console.WriteLine();
             }
         }
-
+        //Yeni kullanıcı oluşturma ve güncelleme
         static void CreateAccount()
         {
             Account newAccount = new Account
@@ -63,6 +63,7 @@ namespace BankApplication
                 Created = DateTime.Now,
                 Updated = DateTime.Now
             };
+            //Yeni kullanıcı için Hesap oluşturma adımları
 
             Console.Write("Adınızı girin: ");
             newAccount.Name = Console.ReadLine();
@@ -73,8 +74,9 @@ namespace BankApplication
             Console.Write("E-posta adresinizi girin: ");
             newAccount.Email = Console.ReadLine();
 
-            Console.Write("Şifrenizi girin: ");
+            Console.Write("Şifrenizi oluşturun: ");
             newAccount.Password = Console.ReadLine();
+            Console.WriteLine("Şifreniz başarıyla oluşturuldu! ");
 
             Console.Write("Telefon numaranızı girin: ");
             newAccount.PhoneNumber = Console.ReadLine();
@@ -88,7 +90,7 @@ namespace BankApplication
             accounts.Add(newAccount);
             Console.WriteLine($"Hesap başarıyla oluşturuldu! Hesap Numarası: {newAccount.AccountNumber}");
         }
-
+        //Yeni oluşturulan kullanıcıya atanan hesap numarası ve bakiyenin Consolda görüntülenmesi
         static void CheckBalance()
         {
             string accountNumber = GetAccountNumber();
@@ -102,7 +104,7 @@ namespace BankApplication
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
-
+        //Kullanıcının hesabına bakiye eklemesi
         static void DepositMoney()
         {
             string accountNumber = GetAccountNumber();
@@ -127,7 +129,7 @@ namespace BankApplication
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
-
+        //Para çekme ve kalan bakiyenin görüntülenmmesi
         static void WithdrawMoney()
         {
             string accountNumber = GetAccountNumber();
@@ -159,13 +161,13 @@ namespace BankApplication
                 Console.WriteLine("Geçersiz hesap numarası.");
             }
         }
-
+        //Hesap numarasının girilmesi
         static string GetAccountNumber()
         {
             Console.Write("Hesap numarasını girin: ");
             return Console.ReadLine();
         }
-
+        //Yeni kullanıcıya random hesap numarası atama
         static string GenerateAccountNumber()
         {
             Random random = new Random();
@@ -173,5 +175,5 @@ namespace BankApplication
         }
     }
 
-    
+
 }
