@@ -1,13 +1,12 @@
-﻿using BankApplication.Domain.Entities;
-using BankApplication.Services;
-using System;
+﻿using BankApplication.Domain;
+using BankApplication.Domain.Entities;
 
 namespace BankApplication
 {
     class Program
     {
         static AccountService accountService = new AccountService();
-        static TransferService transferService = new TransferService(accountService);
+        static TransferMoneyService transferService = new TransferMoneyService(accountService);
         static Account currentAccount = null;
 
         static void Main(string[] args)
