@@ -1,11 +1,13 @@
-﻿using BankApplication.Domain;
-using BankApplication.Domain.Entities;
+﻿using BankApplication.Domain.Entities;
+using BankApplication.Services;
+using System;
 
 namespace BankApplication
 {
     class Program
     {
         static AccountService accountService = new AccountService();
+        static TransferService transferService = new TransferService(accountService);
         static Account currentAccount = null;
 
         static void Main(string[] args)
@@ -202,30 +204,22 @@ namespace BankApplication
             {
                 Console.Write("Alıcı hesap numarasını girin: ");
                 string receiverAccountNumber = Console.ReadLine();
-                Account receiverAccount = accountService.GetAccountByNumber(receiverAccountNumber);
 
-                if (receiverAccount != null)
+                Console.Write("Transfer etmek istediğiniz miktarı girin: ");
+                if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                 {
-                    Console.Write("Transfer etmek istediğiniz miktarı girin: ");
-                    if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
+                    if (transferService.TransferMoney(currentAccount.AccountNumber, receiverAccountNumber, amount))
                     {
-                        if (accountService.TransferMoney(currentAccount, receiverAccount, amount))
-                        {
-                            Console.WriteLine($"Transfer başarılı! Gönderen yeni bakiye: {currentAccount.Balance} TL, Alıcı yeni bakiye: {receiverAccount.Balance} TL");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Yetersiz bakiye.");
-                        }
+                        Console.WriteLine($"Transfer başarılı! Gönderen yeni bakiye: {currentAccount.Balance} TL");
                     }
                     else
                     {
-                        Console.WriteLine("Geçersiz miktar.");
+                        Console.WriteLine("Yetersiz bakiye veya geçersiz alıcı hesap numarası.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Geçersiz alıcı hesap numarası.");
+                    Console.WriteLine("Geçersiz miktar.");
                 }
             }
             else
