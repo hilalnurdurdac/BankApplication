@@ -1,12 +1,12 @@
-﻿using BankApplication.Domain.Entities;
-using System;
-using System.Collections.Generic;
+﻿using BankApplication.Domain;
+using BankApplication.Domain.Entities;
 
 namespace BankApplication
 {
     class Program
     {
-        static List<Account> accounts = new List<Account>();
+        static AccountService accountService = new AccountService();
+        static Account currentAccount = null;
 
         static void Main(string[] args)
         {
@@ -14,115 +14,149 @@ namespace BankApplication
 
             while (running)
             {
-                Console.WriteLine("Bankacılık Uygulamasına Hoş Geldiniz!");
-                Console.WriteLine(" ");
-                Console.WriteLine("Lütfen Yapmak İstediğiniz İşlemi Giriniz: ");
-                Console.WriteLine("1. Hesap Oluştur");
-                Console.WriteLine("2. Bakiye Sorgulama");
-                Console.WriteLine("3. Para Yatırma");
-                Console.WriteLine("4. Para Çekme");
-                Console.WriteLine("5. Para Gönderme");
-                Console.WriteLine("6. Çıkış");
-                Console.Write("Lütfen bir seçenek girin: ");
-                string choice = Console.ReadLine();
+                if (currentAccount == null)
+                {
+                    Console.WriteLine("Bankacılık Uygulamasına Hoş Geldiniz!");
+                    Console.WriteLine(" ");
+                    Console.WriteLine("Lütfen Yapmak İstediğiniz İşlemi Giriniz: ");
+                    Console.WriteLine("1. Hesap Oluştur");
+                    Console.WriteLine("2. Hesaba Giriş");
+                    Console.WriteLine("3. Çıkış");
+                    Console.Write("Lütfen bir seçenek girin: ");
+                    string initialChoice = Console.ReadLine();
 
-                if (choice == "1")
-                {
-                    CreateAccount();
-                }
-                else if (choice == "2")
-                {
-                    CheckBalance();
-                }
-                else if (choice == "3")
-                {
-                    DepositMoney();
-                }
-                else if (choice == "4")
-                {
-                    WithdrawMoney();
-                }
-                else if (choice == "5")
-                {
-                    TransferMoney();
-                }
-                else if (choice == "6")
-                {
-                    running = false;
-                    Console.WriteLine("Çıkış yapılıyor...");
+                    if (initialChoice == "1")
+                    {
+                        CreateAccount();
+                    }
+                    else if (initialChoice == "2")
+                    {
+                        Login();
+                    }
+                    else if (initialChoice == "3")
+                    {
+                        running = false;
+                        Console.WriteLine("Çıkış yapılıyor...");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Geçersiz seçenek, lütfen tekrar deneyin.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Geçersiz seçenek, lütfen tekrar deneyin.");
+                    Console.WriteLine(" ");
+                    Console.WriteLine("Lütfen Yapmak İstediğiniz İşlemi Giriniz: ");
+                    Console.WriteLine("1. Bakiye Sorgulama");
+                    Console.WriteLine("2. Para Yatırma");
+                    Console.WriteLine("3. Para Çekme");
+                    Console.WriteLine("4. Para Gönderme");
+                    Console.WriteLine("5. Çıkış");
+                    Console.Write("Lütfen bir seçenek girin: ");
+                    string choice = Console.ReadLine();
+
+                    if (choice == "1")
+                    {
+                        CheckBalance();
+                    }
+                    else if (choice == "2")
+                    {
+                        DepositMoney();
+                    }
+                    else if (choice == "3")
+                    {
+                        WithdrawMoney();
+                    }
+                    else if (choice == "4")
+                    {
+                        TransferMoney();
+                    }
+                    else if (choice == "5")
+                    {
+                        currentAccount = null;
+                        Console.WriteLine("Çıkış yapılıyor...");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Geçersiz seçenek, lütfen tekrar deneyin.");
+                    }
                 }
 
                 Console.WriteLine();
             }
         }
-        //Yeni kullanıcı oluşturma ve güncelleme
+
         static void CreateAccount()
         {
-            Account newAccount = new Account
-            {
-                Id = Guid.NewGuid(),
-                Created = DateTime.Now,
-                Updated = DateTime.Now
-            };
-            //Yeni kullanıcı için Hesap oluşturma adımları
-
             Console.Write("Adınızı girin: ");
-            newAccount.Name = Console.ReadLine();
+            string name = Console.ReadLine();
 
             Console.Write("Soyadınızı girin: ");
-            newAccount.Surname = Console.ReadLine();
+            string surname = Console.ReadLine();
 
             Console.Write("E-posta adresinizi girin: ");
-            newAccount.Email = Console.ReadLine();
+            string email = Console.ReadLine();
 
             Console.Write("Şifrenizi oluşturun: ");
-            newAccount.Password = Console.ReadLine();
-            Console.WriteLine("Şifreniz başarıyla oluşturuldu! ");
+            string password = Console.ReadLine();
+            Console.WriteLine("Şifreniz başarıyla oluşturuldu!");
 
             Console.Write("Telefon numaranızı girin: ");
-            newAccount.PhoneNumber = Console.ReadLine();
+            string phoneNumber = Console.ReadLine();
 
             Console.Write("Kimlik numaranızı girin: ");
-            newAccount.IdentityNumber = Console.ReadLine();
+            string identityNumber = Console.ReadLine();
 
-            newAccount.Balance = "0";
-            newAccount.AccountNumber = GenerateAccountNumber();
-
-            accounts.Add(newAccount);
+            Account newAccount = accountService.CreateAccount(name, surname, email, password, phoneNumber, identityNumber);
             Console.WriteLine($"Hesap başarıyla oluşturuldu! Hesap Numarası: {newAccount.AccountNumber}");
         }
-        //Yeni oluşturulan kullanıcıya atanan hesap numarası ve bakiyenin Consolda görüntülenmesi
-        static void CheckBalance()
+
+        static void Login()
         {
-            string accountNumber = GetAccountNumber();
-            Account account = accounts.Find(a => a.AccountNumber == accountNumber);
-            if (account != null)
+            Console.Write("E-posta adresinizi girin: ");
+            string email = Console.ReadLine();
+
+            Console.Write("Şifrenizi girin: ");
+            string password = Console.ReadLine();
+
+            currentAccount = accountService.Login(email, password);
+            if (currentAccount != null)
             {
-                Console.WriteLine($"Hesap Numarası: {accountNumber}, Bakiye: {account.Balance} TL");
+                Console.WriteLine($"Giriş başarılı! Hoş geldiniz, {currentAccount.Name} {currentAccount.Surname}");
             }
             else
             {
-                Console.WriteLine("Geçersiz hesap numarası.");
+                Console.WriteLine("Geçersiz e-posta veya şifre.");
             }
         }
-        //Kullanıcının hesabına bakiye eklemesi
+
+        static void CheckBalance()
+        {
+            if (currentAccount != null)
+            {
+                Console.WriteLine($"Hesap Numarası: {currentAccount.AccountNumber}, Bakiye: {currentAccount.Balance} TL");
+            }
+            else
+            {
+                Console.WriteLine("Giriş yapmanız gerekmektedir.");
+            }
+        }
+
         static void DepositMoney()
         {
-            string accountNumber = GetAccountNumber();
-            Account account = accounts.Find(a => a.AccountNumber == accountNumber);
-            if (account != null)
+            if (currentAccount != null)
             {
                 Console.Write("Yatırmak istediğiniz miktarı girin: ");
                 if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                 {
-                    decimal currentBalance = decimal.Parse(account.Balance);
-                    account.Balance = (currentBalance + amount).ToString();
-                    account.Updated = DateTime.Now;
-                    Console.WriteLine($"Yeni bakiye: {account.Balance} TL");
+                    if (accountService.DepositMoney(currentAccount, amount))
+                    {
+                        Console.WriteLine($"Yeni bakiye: {currentAccount.Balance} TL");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Geçersiz miktar.");
+                    }
                 }
                 else
                 {
@@ -131,25 +165,20 @@ namespace BankApplication
             }
             else
             {
-                Console.WriteLine("Geçersiz hesap numarası.");
+                Console.WriteLine("Giriş yapmanız gerekmektedir.");
             }
         }
-        //Para çekme ve kalan bakiyenin görüntülenmmesi
+
         static void WithdrawMoney()
         {
-            string accountNumber = GetAccountNumber();
-            Account account = accounts.Find(a => a.AccountNumber == accountNumber);
-            if (account != null)
+            if (currentAccount != null)
             {
                 Console.Write("Çekmek istediğiniz miktarı girin: ");
                 if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                 {
-                    decimal currentBalance = decimal.Parse(account.Balance);
-                    if (currentBalance >= amount)
+                    if (accountService.WithdrawMoney(currentAccount, amount))
                     {
-                        account.Balance = (currentBalance - amount).ToString();
-                        account.Updated = DateTime.Now;
-                        Console.WriteLine($"Yeni bakiye: {account.Balance} TL");
+                        Console.WriteLine($"Yeni bakiye: {currentAccount.Balance} TL");
                     }
                     else
                     {
@@ -158,47 +187,35 @@ namespace BankApplication
                 }
                 else
                 {
-                    Console.WriteLine("Gönderilen miktar 0'dan büyük olmalıdır.");
+                    Console.WriteLine("Geçersiz miktar.");
                 }
             }
             else
             {
-                Console.WriteLine("Geçersiz hesap numarası.");
+                Console.WriteLine("Giriş yapmanız gerekmektedir.");
             }
         }
-        //istenilen kullanıcya para gönderme
+
         static void TransferMoney()
         {
-            Console.Write("Gönderen hesap numarasını girin: ");
-            string senderAccountNumber = Console.ReadLine();
-            Account senderAccount = accounts.Find(a => a.AccountNumber == senderAccountNumber);
-
-            if (senderAccount != null)
+            if (currentAccount != null)
             {
                 Console.Write("Alıcı hesap numarasını girin: ");
                 string receiverAccountNumber = Console.ReadLine();
-                Account receiverAccount = accounts.Find(a => a.AccountNumber == receiverAccountNumber);
+                Account receiverAccount = accountService.GetAccountByNumber(receiverAccountNumber);
 
                 if (receiverAccount != null)
                 {
                     Console.Write("Transfer etmek istediğiniz miktarı girin: ");
                     if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                     {
-                        decimal senderBalance = decimal.Parse(senderAccount.Balance);
-                        if (senderBalance >= amount)
+                        if (accountService.TransferMoney(currentAccount, receiverAccount, amount))
                         {
-                            senderAccount.Balance = (senderBalance - amount).ToString();
-                            decimal receiverBalance = decimal.Parse(receiverAccount.Balance);
-                            receiverAccount.Balance = (receiverBalance + amount).ToString();
-
-                            senderAccount.Updated = DateTime.Now;
-                            receiverAccount.Updated = DateTime.Now;
-
-                            Console.WriteLine($"Transfer başarılı! Gönderen yeni bakiye: {senderAccount.Balance} TL, Alıcı yeni bakiye: {receiverAccount.Balance} TL");
+                            Console.WriteLine($"Transfer başarılı! Gönderen yeni bakiye: {currentAccount.Balance} TL, Alıcı yeni bakiye: {receiverAccount.Balance} TL");
                         }
                         else
                         {
-                            Console.WriteLine("Gönderen hesapta yetersiz bakiye.");
+                            Console.WriteLine("Yetersiz bakiye.");
                         }
                     }
                     else
@@ -213,23 +230,8 @@ namespace BankApplication
             }
             else
             {
-                Console.WriteLine("Geçersiz gönderen hesap numarası.");
+                Console.WriteLine("Giriş yapmanız gerekmektedir.");
             }
         }
-
-        //Hesap numarasının girilmesi 827489
-        static string GetAccountNumber()
-        {
-            Console.Write("Hesap numarasını girin: ");
-            return Console.ReadLine();
-        }
-        //Yeni kullanıcıya random hesap numarası atama
-        static string GenerateAccountNumber()
-        {
-            Random random = new Random();
-            return random.Next(100000, 999999).ToString();
-        }
     }
-
-
 }
